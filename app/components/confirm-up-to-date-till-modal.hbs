@@ -1,0 +1,32 @@
+<AuModal
+  @modalOpen={{true}}
+  @closeModal={{this.close}}
+  data-test-confirm-up-to-date-till-modal="modal"
+>
+  <:title>Is deze herziening klaar?</:title>
+  <:body>
+    De wijzigingen aan de instantie zijn bewaard.
+    Ben je klaar met het verwerken van de aanpassingen voor deze instantie? Dan kan het label “herziening nodig” worden verwijderd.
+  </:body>
+  <:footer>
+    <AuButtonGroup>
+      <AuButton
+        @disabled={{this.confirmUpToDateTill.isRunning}}
+        @loading={{this.confirmUpToDateTill.isRunning}}
+        @loadingMessage="Aan het verwijderen"
+        {{on "click" (perform this.confirmUpToDateTill)}}
+        data-test-confirm-confirm-up-to-date-modal="delete-button"
+      >
+        Ja, verwijder het label “herziening nodig”
+      </AuButton>
+      <AuButton
+        @skin="secondary"
+        @disabled={{this.confirmUpToDateTill.isRunning}}
+        {{on "click" this.close}}
+        data-test-confirm-confirm-up-to-date-modal="cancel-button"
+      >
+        Nee, ik werk hier later aan verder
+      </AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

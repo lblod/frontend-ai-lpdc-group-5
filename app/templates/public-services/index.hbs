@@ -1,0 +1,254 @@
+<SidebarContainer @scroll={{true}}>
+  <:sidebar>
+    <div class="au-o-box au-o-box--small au-o-flow">
+      <div>
+        <AuLabel for="search">Zoeken</AuLabel>
+        <input
+          value={{this.search}}
+          id="search"
+          class="au-c-input au-c-input--block"
+          {{on "input" (perform this.searchTask value="target.value")}}
+        />
+      </div>
+      <div>
+        <AuLabel>Toon enkel</AuLabel>
+        <AuCheckbox
+          @checked={{this.isReviewRequiredFilterEnabled}}
+          @onChange={{this.toggleReviewRequiredFilter}}>
+          Herziening nodig
+        </AuCheckbox>
+        {{#if this.isChosenFormInformal}}
+            <AuCheckbox
+            @checked={{this.needsConversionFromFormalToInformalFilterEnabled}}
+            @onChange={{this.toggleNeedsConversionFromFormalToInformalFilter}}>
+            u→je omzetting nodig
+          </AuCheckbox>
+        {{/if}}
+        <AuCheckbox
+          @checked={{this.isYourEurope}}
+          @onChange={{this.handleYourEuropeFilterChange}}>
+          Your Europe
+        </AuCheckbox>
+        {{#if this.municipalityHasForMunicipalityMergerInstances}}
+          <AuCheckbox
+            @checked={{this.forMunicipalityMerger}}
+            @onChange={{this.handleForMunicipalityMergerFilterChange}}>
+            Bestemd voor fusie
+          </AuCheckbox>
+        {{/if}}
+      </div>
+      <div>
+        <AuLabel>Filter op eigenschappen</AuLabel>
+        <label class="au-u-margin-top-small au-u-margin-bottom-tiny au-c-label au-u-light">
+          Status
+        </label>
+        <PowerSelectMultiple
+          @options={{this.statusesOptions}}
+          @selected={{this.statuses}}
+          @onChange={{this.handleStatusesFilterChange}}
+          @searchField="label"
+          as |status|>
+          {{status.label}}
+        </PowerSelectMultiple>
+        <label class="au-u-margin-top-small au-u-margin-bottom-tiny au-c-label au-u-light">
+          Producttype
+        </label>
+        <PowerSelectMultiple
+          @options={{this.producttypesOptions}}
+          @selected={{this.producttypes}}
+          @onChange={{this.handleProducttypesFilterChange}}
+          @searchField="label"
+          as |producttype|>
+          {{producttype.label}}
+        </PowerSelectMultiple>
+        <label class="au-u-margin-top-small au-u-margin-bottom-tiny au-c-label au-u-light">
+          Doelgroepen
+        </label>
+        <PowerSelectMultiple
+          @options={{this.doelgroepenOptions}}
+          @selected={{this.doelgroepen}}
+          @onChange={{this.handleDoelgroepenFilterChange}}
+          @searchField="label"
+          as |doelgroep|>
+          {{doelgroep.label}}
+        </PowerSelectMultiple>
+        <label class="au-u-margin-top-small au-u-margin-bottom-tiny au-c-label au-u-light">
+          Thema's
+        </label>
+        <PowerSelectMultiple
+          @options={{this.themasOptions}}
+          @selected={{this.themas}}
+          @onChange={{this.handleThemasFilterChange}}
+          @searchField="label"
+          as |thema|>
+          {{thema.label}}
+        </PowerSelectMultiple>
+      </div>
+      {{#if this.hasActiveFilters}}
+        <div class="au-u-text-left@medium">
+          <AuButton @icon="cross" @skin="secondary" {{on "click" this.resetFilters}}>
+            Wis filters
+          </AuButton>
+        </div>
+      {{/if}}
+    </div>
+  </:sidebar>
+  <:content>
+    <AuToolbar @size="medium" as |Group|>
+      <Group>
+        <AuHeading @skin="2">
+          Lokale Producten- en Dienstencatalogus
+        </AuHeading>
+      </Group>
+      <Group class="au-u-flex au-u-flex--vertical-center">
+        <AuLink
+          @route="public-services.add"
+          @icon="add"
+          @iconAlignment="left"
+          @skin="button"
+        >
+          Product of dienst toevoegen
+        </AuLink>
+      </Group>
+    </AuToolbar>
+    <AuDataTable
+      @content={{this.publicServices}}
+      @sort={{this.sort}}
+      @page={{this.page}}
+      @size={{20}}
+      as |Table|
+    >
+      <Table.content as |Content|>
+        <Content.header>
+          <th>
+            Productnaam
+          </th>
+          <th>
+            IPDC Concept ID
+          </th>
+          <th>
+            Producttype
+          </th>
+          <th>
+            Doelgroepen
+          </th>
+          <th>
+            Thema's
+          </th>
+          <th>
+            Publicatiekanaal
+          </th>
+          <AuDataTableThSortableReverseSortIndicated
+            @field="dateModified"
+            @currentSorting={{this.sort}}
+            @label="Laatst bewerkt"
+          />
+          <AuDataTableThSortableReverseSortIndicated
+            @field="status.label"
+            @currentSorting={{this.sort}}
+            @label="Status"
+          />
+        </Content.header>
+
+        {{#if this.showTableLoader}}
+          <tbody>
+          <tr>
+            <td colspan="100%" class="au-c-data-table__message">
+              <AuLoader @size="small" />
+            </td>
+          </tr>
+          </tbody>
+        {{else if this.hasErrored}}
+          <tr>
+            <td colspan="100%" class="au-c-data-table__message">
+              <AuAlert
+                @title="Er ging iets fout bij het opvragen van de producten en diensten."
+                @icon="info-circle"
+                @skin="error"
+                @size="small"
+                class="au-u-margin-bottom-none"
+              />
+            </td>
+          </tr>
+        {{else if this.hasResults}}
+          <Content.body as |publicService|>
+            <td>
+              {{! template-lint-disable no-triple-curlies~}}
+              <AuLink
+                @skin="primary"
+                @route="public-services.details"
+                @model={{publicService.id}}
+              >
+                {{publicService.nameNlOrGeenTitel}}
+              </AuLink>
+              {{#if publicService.forMunicipalityMerger}}
+                <AuPill @skin="success" @size="small" @icon="users-four-of-four">
+                  fusie
+                </AuPill>
+              {{/if}}
+              {{#if (this.serviceNeedsReview publicService)}}
+                <AuPill @skin="warning" @size="small" @icon="alert-triangle">
+                  Herziening nodig
+                </AuPill>
+              {{/if}}
+              {{#if publicService.needsConversionFromFormalToInformal}}
+                <AuPill @skin="default" @size="small" @icon="message">
+                  u→je
+                </AuPill>
+              {{/if}}
+            </td>
+            <td>
+              {{publicService.productId}}
+            </td>
+            <td>{{publicService.type.label}}</td>
+            <td>
+              <PillList @list={{await publicService.targetAudiencesOrderedOnLabel}} as |targetAudience|>
+                <AuPill>
+                  {{targetAudience.label}}
+                </AuPill>
+              </PillList>
+            </td>
+            <td>
+              <PillList @list={{await publicService.thematicAreasOrderedOnLabel}} as |thematicArea|>
+                <AuPill>
+                  {{thematicArea.label}}
+                </AuPill>
+              </PillList>
+            </td>
+            <td>
+              <PillList @list={{await publicService.publicationMediaOrderedOnLabel}} as |publicationMedium|>
+                <AuPill>
+                  {{publicationMedium.label}}
+                </AuPill>
+              </PillList>
+            </td>
+            <td>
+              {{moment-format publicService.dateModified "DD-MM-YYYY - HH:mm"}}
+            </td>
+            <td>
+              {{#if publicService.status.uri}}
+                <Status @uri={{publicService.status.uri}}>
+                  {{publicService.status.label}}
+                </Status>
+              {{else}}
+                –
+              {{/if}}
+            </td>
+          </Content.body>
+        {{else}}
+          <tr>
+            <td colspan="100%" class="au-c-data-table__message">
+              <AuAlert
+                @title="Er werden geen producten of diensten gevonden"
+                @icon="info-circle"
+                @skin="info"
+                @size="small"
+                class="au-u-margin-bottom-none">
+              </AuAlert>
+            </td>
+          </tr>
+        {{/if}}
+      </Table.content>
+    </AuDataTable>
+  </:content>
+</SidebarContainer>

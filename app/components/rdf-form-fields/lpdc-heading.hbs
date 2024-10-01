@@ -1,0 +1,20 @@
+<div class="au-u-flex">
+  <AuHeading @level={{this.level}} @skin={{this.skin}}>
+    {{@field.label}}
+  </AuHeading>
+  {{#if this.showPill }}
+    <AuPill
+      class="au-u-flex-self-center au-u-margin-tiny"
+      @skin="warning"
+      @size="regular"
+      @icon="alert-triangle"
+    >
+      {{this.pillText}}
+    </AuPill>
+    <AuLinkExternal
+      href={{this.ipdcConceptCompareLink}}
+      target="blank">
+      Bekijk conceptwijzigingen
+    </AuLinkExternal>
+  {{/if}}
+</div>

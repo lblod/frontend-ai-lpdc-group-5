@@ -1,0 +1,51 @@
+/* ==================================
+   # LPDC
+   ================================== */
+
+// SETTINGS
+@import "@appuniversum/ember-appuniversum/styles/a-settings";
+
+// TOOLS
+@import "@appuniversum/ember-appuniversum/styles/a-tools";
+
+// GENERIC
+@import "@appuniversum/ember-appuniversum/styles/a-generic";
+
+// ELEMENTS
+@import "@appuniversum/ember-appuniversum/styles/a-elements";
+
+// OBJECTS
+@import "@appuniversum/ember-appuniversum/styles/a-objects";
+
+// COMPONENTS
+@import "@appuniversum/ember-appuniversum/styles/a-components";
+@import "project/c-data-list";
+@import "project/c-rich-text-editor";
+@import "project/c-sidebar-container";
+@import "project/c-status-label";
+@import "project/c-rdf-forms";
+
+// PLUGINS
+@import "@appuniversum/ember-appuniversum/styles/a-plugins";
+@import "project/p-ember-promise-modals";
+
+// ember-rdfa-editor styles
+// TODO: `@import "ember-rdfa-editor";` imports annotation styles which are _huge_ when compiled
+// so we only import the base component styles for now.
+@import "ember-rdfa-editor/c-container";
+@import "ember-rdfa-editor/c-dropdown";
+@import "ember-rdfa-editor/c-content";
+@import "ember-rdfa-editor/c-editor";
+@import "ember-rdfa-editor/c-editor-hints";
+@import "ember-rdfa-editor/c-icon";
+@import "ember-rdfa-editor/c-toast";
+@import "ember-rdfa-editor/c-toolbar";
+@import "ember-rdfa-editor/c-table";
+@import "ember-rdfa-editor/c-ember-node";
+@import "ember-rdfa-editor/shame";
+
+// UTILITIES
+@import "@appuniversum/ember-appuniversum/styles/a-utilities";
+
+// TEMPORARY HACKS AND QUICKFIXES
+@import "shame";

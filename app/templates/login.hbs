@@ -1,0 +1,69 @@
+<AuMainContainer as |m|>
+  <m.content @scroll={{true}}>
+    <main>
+      <AuContentHeader
+        @titlePartOne="Vlaanderen"
+        @titlePartTwo="is lokaal bestuur"
+      >
+        <img
+          sizes="50vw"
+          src="/assets/images/header-1600.jpg"
+          srcset="/assets/images/header-320.jpg 320w, /assets/images/header-1024.jpg 1024w, /assets/images/header-1600.jpg 1600w"
+          alt=""
+          {{! template-lint-disable require-valid-alt-text}}
+        />
+      </AuContentHeader>
+
+      <section class="au-o-region-large">
+        <div class="au-o-layout">
+          <div class="au-u-flex au-u-flex--wrap">
+            <div class="u-flex-grow au-u-margin-right@medium au-u-margin-bottom">
+              <AuContent @skin="large">
+                <h1>Lokale Producten- en Dienstencatalogus</h1>
+                <p class="au-u-max-width-small">Lukt het aanmelden niet? Neem
+                  contact op met uw interne beheerder. Indien er zich een
+                  probleem voordoet, contacteer
+                  <a
+                    href="https://overheid.vlaanderen.be/ict/ict-diensten/gebruikersbeheer"
+                    class="au-c-link"
+                  >gebruikersbeheer Vlaanderen</a>.</p>
+              </AuContent>
+            </div>
+            <LoginButton />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <AuMainFooter>
+      <FooterHeading />
+      <AuContent @skin="small">
+        <p>Uitgegeven door
+          <a
+            class="au-c-link"
+            href="https://www.vlaanderen.be/organisaties/administratieve-diensten-van-de-vlaamse-overheid/beleidsdomein-kanselarij-en-bestuur/agentschap-binnenlands-bestuur"
+          >Agentschap Binnenlands Bestuur</a></p>
+        <ul class="au-c-list-horizontal">
+          <li class="au-c-list-horizontal__item">
+            <AuLink
+              @route="legaal.disclaimer"
+              @skin="secondary"
+            >Disclaimer</AuLink>
+          </li>
+          <li class="au-c-list-horizontal__item">
+            <AuLink
+              @route="legaal.cookieverklaring"
+              @skin="secondary"
+            >Cookieverklaring</AuLink>
+          </li>
+          <li class="au-c-list-horizontal__item">
+            <AuLink
+              @route="legaal.toegankelijkheidsverklaring"
+              @skin="secondary"
+            >Toegankelijkheid</AuLink>
+          </li>
+        </ul>
+      </AuContent>
+    </AuMainFooter>
+  </m.content>
+</AuMainContainer>

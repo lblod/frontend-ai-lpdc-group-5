@@ -1,0 +1,233 @@
+{{page-title "Koppel een instantie aan een concept"}}
+
+<SidebarContainer @scroll={{true}}>
+  <:sidebar>
+    <div class="au-o-box au-o-box--small au-o-flow">
+      <div>
+        <AuLabel for="search">Zoeken</AuLabel>
+        <input
+          value={{this.search}}
+          id="search"
+          class="au-c-input au-c-input--block"
+          {{on "input" (perform this.searchTask value="target.value")}}
+        />
+      </div>
+
+      <div>
+        <AuLabel>Toon enkel</AuLabel>
+        <AuCheckbox
+          @checked={{this.isNewConcept}}
+          @onChange={{this.handleNewConceptFilterChange}}>
+          Nieuwe producten
+        </AuCheckbox>
+        <AuCheckbox
+          @checked={{this.isNotInstantiated}}
+          @onChange={{this.handleNotInstantiatedConceptFilterChange}}>
+          Niet toegevoegde producten
+        </AuCheckbox>
+        <AuCheckbox
+          @checked={{this.isYourEurope}}
+          @onChange={{this.handleYourEuropeConceptFilterChange}}>
+          Your Europe
+        </AuCheckbox>
+      </div>
+
+      <div>
+        <AuLabel>Filter op eigenschappen</AuLabel>
+        <label class="au-u-margin-top-small au-u-margin-bottom-tiny au-c-label au-u-light">
+          Producttype
+        </label>
+        <PowerSelectMultiple
+          @options={{this.producttypesOptions}}
+          @selected={{this.producttypes}}
+          @onChange={{this.handleProducttypesConceptFilterChange}}
+          @searchField="label"
+          as |producttype|>
+          {{producttype.label}}
+        </PowerSelectMultiple>
+        <label class="au-u-margin-top-small au-u-margin-bottom-tiny au-c-label au-u-light">
+          Doelgroepen
+        </label>
+        <PowerSelectMultiple
+          @options={{this.doelgroepenOptions}}
+          @selected={{this.doelgroepen}}
+          @onChange={{this.handleDoelgroepenConceptFilterChange}}
+          @searchField="label"
+          as |doelgroep|>
+          {{doelgroep.label}}
+        </PowerSelectMultiple>
+        <label class="au-u-margin-top-small au-u-margin-bottom-tiny au-c-label au-u-light">
+          Thema's
+        </label>
+        <PowerSelectMultiple
+          @options={{this.themasOptions}}
+          @selected={{this.themas}}
+          @onChange={{this.handleThemasConceptFilterChange}}
+          @searchField="label"
+          as |thema|>
+          {{thema.label}}
+        </PowerSelectMultiple>
+      </div>
+
+      {{#if this.hasActiveFilters}}
+        <div class="au-u-text-left@medium">
+          <AuButton @icon="cross" @skin="secondary" {{on "click" this.resetFilters}}>
+            Wis filters
+          </AuButton>
+        </div>
+      {{/if}}
+    </div>
+  </:sidebar>
+  <:content>
+    <AuToolbar @size="medium" @nowrap={{true}} as |Group|>
+      <Group>
+        <AuHeading @skin="2">
+          Koppel een instantie aan een concept
+        </AuHeading>
+      </Group>
+      <Group class="au-u-flex au-u-flex--vertical-center">
+        <AuLink
+          @route="public-services.details"
+          @model={{@model.publicService.id}}
+          @skin="button-secondary"
+        >
+          Annuleren
+        </AuLink>
+      </Group>
+    </AuToolbar>
+
+    <AuToolbar @border="bottom" @nowrap={{true}} @size="medium" as |Group|>
+      <Group>
+        <AuContent @skin="small" class="au-u-max-width-small">
+          <p>
+            Selecteer het relevante concept in de lijst hieronder.
+          </p>
+          <p>
+            Door het koppelen van je instantie aan het concept kan je eventuele
+            wijzigingen aan het concept opvolgen.<br />
+            De instantie wordt hierbij in geen geval overschreven of op enige
+            andere manier gewijzigd.
+          </p>
+        </AuContent>
+      </Group>
+    </AuToolbar>
+
+    <AuDataTable
+      @content={{this.publicServices}}
+      @sort={{this.sort}}
+      @page={{this.page}}
+      @size={{20}}
+      as |Table|
+    >
+      <Table.content as |Content|>
+        <Content.header>
+          <th>
+            Productnaam
+          </th>
+          <th>IPDC Concept ID</th>
+          <th>
+            Producttype
+          </th>
+          <th>
+            Doelgroepen
+          </th>
+          <th>
+            Thema's
+          </th>
+          <th>
+            Publicatiekanaal
+          </th>
+          <th class="u-table-cell-shrink-content">
+            <span class="au-u-hidden-visually">voeg product of dienst toe</span>
+          </th>
+        </Content.header>
+
+        {{#if this.showTableLoader}}
+          <tbody>
+            <tr>
+              <td colspan="100%" class="au-c-data-table__message">
+                <AuLoader @size="small" />
+              </td>
+            </tr>
+          </tbody>
+        {{else if this.hasErrored}}
+          <tr>
+            <td colspan="100%" class="au-c-data-table__message">
+              <AuAlert
+                @title="Er ging iets fout bij het opvragen van de producten en diensten."
+                @icon="info-circle"
+                @skin="error"
+                @size="small"
+                class="au-u-margin-bottom-none">
+
+              </AuAlert>
+            </td>
+          </tr>
+        {{else if this.hasResults}}
+          <Content.body as |concept|>
+            <td>
+              <AuLink
+                @route="public-services.concept-details"
+                @model={{concept.id}}
+                @query={{hash publicServiceId=@model.publicService.id}}
+              >
+                {{! template-lint-disable no-triple-curlies~}}
+                {{{concept.nameNl}}}
+              </AuLink>
+              {{#if concept.displayConfiguration.isNewConcept}}
+                <AuPill @skin="success">Nieuw</AuPill>
+              {{/if}}
+              {{#if concept.displayConfiguration.isInstantiated}}
+                <AuPill @skin="border">Toegevoegd</AuPill>
+              {{/if}}
+            </td>
+            <td>{{concept.productId}}</td>
+            <td>{{concept.type.label}}</td>
+            <td>
+              <PillList @list={{await concept.targetAudiencesOrderedOnLabel}} as |targetAudience|>
+                <AuPill>
+                  {{targetAudience.label}}
+                </AuPill>
+              </PillList>
+            </td>
+            <td>
+              <PillList @list={{await concept.thematicAreasOrderedOnLabel}} as |thematicArea|>
+                <AuPill>
+                  {{thematicArea.label}}
+                </AuPill>
+              </PillList>
+            </td>
+            <td>
+              <PillList @list={{await concept.publicationMediaOrderedOnLabel}} as |publicationMedium|>
+                <AuPill>
+                  {{publicationMedium.label}}
+                </AuPill>
+              </PillList>
+            </td>
+            <td class="u-table-cell-fit-content">
+              <AuLink
+                @icon="link"
+                @skin="button-secondary"
+                {{on 'click' (perform this.linkConcept concept)}}
+              >
+                Koppelen
+              </AuLink>
+            </td>
+          </Content.body>
+        {{else}}
+          <tr>
+            <td colspan="100%" class="au-c-data-table__message">
+              <AuAlert
+                @title="Er werden geen producten of diensten gevonden"
+                @icon="info-circle"
+                @skin="info"
+                @size="small"
+                class="au-u-margin-bottom-none">
+              </AuAlert>
+            </td>
+          </tr>
+        {{/if}}
+      </Table.content>
+    </AuDataTable>
+  </:content>
+</SidebarContainer>
