@@ -137,11 +137,12 @@ export default class DetailsPageComponent extends Component {
 
   get shouldShowConversionAlertDraftInstance() {
     const { publicService, formalInformalChoice } = this.args;
-    return (
-      publicService.needsConversionFromFormalToInformal &&
-      !this.isStatusVerzondenAndPublished &&
-      formalInformalChoice.chosenForm === 'informal'
-    );
+    return false;
+    // return (
+    //   publicService.needsConversionFromFormalToInformal &&
+    //   !this.isStatusVerzondenAndPublished &&
+    //   formalInformalChoice.chosenForm === 'informal'
+    // );
   }
 
   @task
