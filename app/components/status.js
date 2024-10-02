@@ -1,6 +1,11 @@
 import Component from '@glimmer/component';
 
 const STATUS_LOOKUP = {
+  'http://lblod.data.gift/concepts/instance-status/ontwerp-ai-gegenereerd': {
+    skin: 'link',
+    label: 'AI Gegenereerd Ontwerp',
+  },
+
   'http://lblod.data.gift/concepts/instance-status/ontwerp': {
     skin: 'warning',
     label: 'Ontwerp',
